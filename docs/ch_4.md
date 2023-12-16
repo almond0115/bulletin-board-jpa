@@ -50,6 +50,35 @@ Service는 트랜잭션, 도메인 간 순서 보장의 역할만 합니다.
 모든 로직이 **서비스 클래스 내부에서 처리됩니다.** <br>
 그러다 보니 **서비스 계층이 무의미하며, 객체란 단순히 데이터 덩어리** 역할만 하게 됩니다. <br>
 
+```java
+@Transactional
+public Order cancelOrder(int orderId){
+    // 1
+    ordersDto order = ordersDao.selectOrders(orderId);
+    BillingDto billing = billingDao.selectBilling(orderId);
+    DeliveryDto delivery = deliveryDao.selectDelivery(orderid);
+    
+    // 2
+    String deliveryStatus = delivery.getStatuse();
+    
+    // 3
+    if("IN_PROGRESS".equals(deliveryStatus)){
+        delivery.setStatus("CANCEL");
+        deliveryDao.update(delivery);
+    }
+    
+    // 4
+    order.setStatus("CANCEL");
+    ordersDao.update(order);
+    
+    billing.setStatus("CANCEL");
+    deliveryDao.update(billing);
+    
+    return order;
+}
+
+```
+
 #### 반면 도메인 모델에서 처리할 경우 다음과 같은 코드가 될 수 있습니다.
 
 ```java
@@ -140,7 +169,43 @@ API Controller 테스트에 `@WebMvbTest` 를 사용하지 않는 이유는 JPA 
 Controller와 ControllerAdvice 등 외부 연동 관련된 부분만 활성화되니 <br>
 지금 같이 JPA 기능까지 한번에 테스트 할 때는 @SpringBootTest와 TestRestTemplate을 사용하면 됩니다.
 ```
-&rarr; WebEnvironment.RANDOM_PORT 로 인한 랜덤 포트 실행과 insert 쿼리가 실행된 것 모두 확인했습니다.
+&rarr; WebEnvironment.RANDOM_PORT 로 인한 랜덤 포트 실행과 insert 쿼리가 실행된 것 모두 확인
+
+### JPA Auditing 으로 생성시간/수정시간 자동화
+
+보통 `Entity`에 해당 데이터의 생성시간과 수정시간을 포함합니다. <br>
+&rarr; 언제 만들어졌는지, 언제 수정되었는지 등은 차후 유지보수에 있어 굉장히 중요한 정보 <br>
+
+따라서 매번 DB insert/update 전에 날짜 데이터를 등록/수정하는 코드가 다음과 같이 반복하여 들어가게 됩니다.
+
+```java
+public void savePosts() {
+  ...
+  posts.setCreateDate(new LocalDate());
+  postsRepository.save(posts);
+  ...
+}
+```
+
+이와 같은 보일러 플레이트 코드를 `JPA Auditing`을 통해 해결할 수 있습니다.
+
+### LocalDate 사용
+
+**다음의 domain 패키지에 생성한 BaseTimeEntity 클래스는 모든 Entity의 상위 클래스로 <br> 
+Entity들의 createDate, modifiedDate를 자동으로 관리하는 역할입니다.**
+
+```java
+@Getter
+@MappedSuperclass                               // createDate, ModifiedDate 필드들도 칼럼으로 인식
+@EntityListeners(AuditingEntityListener.class)  // Auditing 기능을 포함
+public class BaseTimeEntity {
+    @CreatedDate                                // Entity 생성 후 저장될 떄 시간이 자동 저장
+    private LocalDateTime createdDate;
+
+    @LastModifiedDate                           // 조회한 Entity 값을 변경할 때 시간 자동 저장
+    private LocalDateTime modifiedDate;
+}
+```
 
 
 

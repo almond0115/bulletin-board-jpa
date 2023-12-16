@@ -1,8 +1,8 @@
 package com.nerocoding.springboot.domain.posts;
 
+import com.nerocoding.springboot.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Posts {
+public class Posts extends BaseTimeEntity {
     @Id                                                     // 해당 테이블의 PK 필드
     @GeneratedValue(strategy = GenerationType.IDENTITY)     // PK 생성 규칙 (IDENTITY 옵션 : auto_increment)
     private Long id;
@@ -22,7 +22,6 @@ public class Posts {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
-
     private String author;
 
     @Builder
