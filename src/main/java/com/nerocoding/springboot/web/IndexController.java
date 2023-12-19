@@ -1,7 +1,9 @@
 package com.nerocoding.springboot.web;
 
+import com.nerocoding.springboot.config.auth.dto.SessionUser;
 import com.nerocoding.springboot.service.posts.PostsService;
 import com.nerocoding.springboot.web.dto.PostsResponseDto;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,9 +14,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class IndexController {
     private final PostsService postsService;
+    private final HttpSession httpSession;
+
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("posts", postsService.findAllDesc());
+        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+        if(user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         return "index";
     }
 
