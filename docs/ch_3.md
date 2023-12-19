@@ -1,4 +1,4 @@
-### 프로젝트에 Spring Data Jpa 적용하기
+## 프로젝트에 Spring Data Jpa 적용하기
 
 어노테이션 순서를 **주요 어노테이션을 클래스에 가깝게** 둡니다. <br>
 &rarr; `@Entity`는 JPA의 어노테이션이며 `@Getter`과 `@NoArgsConstructor`는 롬복의 어노테이션입니다.<br>

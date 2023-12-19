@@ -1,4 +1,4 @@
-### 등록/수정/조회 API 만들기
+## 등록/수정/조회 API 만들기
 
 * Request 데이터를 받을 Dto
 * API 요청을 받을 Controller
@@ -206,6 +206,98 @@ public class BaseTimeEntity {
     private LocalDateTime modifiedDate;
 }
 ```
+
+## 게시글 등록하기
+
+```js
+var main = {
+init: function () {
+var _this = this;
+$('#btn-save').on('click', function () {
+_this.save();
+});
+},
+save : function () {
+var data = {
+title: $('#title').val(),
+author: $('#author').val(),
+content: $('#content').val()
+};
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/posts',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function () {
+            alert('글이 등록되었습니다.');
+            window.location.href= '/';
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    }
+};
+
+main.init();
+```
+
+다음은 등록 버튼에서 API 호출하는 JS 입니다. <br>
+
+브라우저의 스코프는 **공용 공간**으로 쓰이기 때문에 나중에 로딩된 js의 `init`, `save`가 먼저 로딩된 js의 function 을 덮어쓰게 됩니다. <br>
+
+여러 사람이 참여하는 프로젝트에서 `중복된 함수 이름`은 자주 발생할 수 있습니다. <br>
+모든 function 이름을 확인하면서 만들 수는 없으므로 index.js 만의 유효범위를 만들어 사용해야 합니다. <br>
+
+방법은 `var index`란 객체를 만들어 해당 객체에 필요한 모든 function 을 선언하는 것입니다. <br>
+이렇게 하면 **index 객체 안에서만 function이 유효하므로 다른 js와 겹칠 위험이 사라집니다.**
+
+> footer.mustache 에 index.js 호출 코드를 보면 `절대 경로(/)`로 바로 시작합니다.
+
+* src/main/resources/static/js/...
+* src/main/resources/static/css/...
+* src/main/resources/static/image/...
+
+> 스프링 부트는 기본적으로 위와 같이 `src/main/resources/static`에 위치한 정적 파일들은 URL에서 `/`로 설정됩니다.
+
+<br>
+
+```md
+규모가 있는 프로젝트에서의 데이터 조회는 FK의 조인, 복잡한 조건 등으로 인해 이런 Entity 만으로 처리하기 어려워
+조회용 프레임워크를 추가로 사용합니다. 대표적 예로 querydsl, jooq, Mybatis 등이 있습니다.
+이 중 querydsl을 추천합니다.
+1. 타입 안정성이 보장됩니다.
+2. 국내 많은 기업이 사용중입니다.
+3. 레퍼런스가 다양합니다.
+```
+
+#### PostsService
+
+```java
+@Service
+public class PostsService {
+    private final PostsRepository postsRepository;
+    
+    ...
+    
+    @Transactional(readOnly=true)
+    public List<PostsListResponseDto> findAllDesc() {
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                // .map(posts -> new PostsListResponseDto(posts))
+                .collect(Collectors.toList());
+    }
+}
+```
+`findAllDesc`메소드의 트랜잭션 어노테이션(@Transactional)에 옵션이 하나 추가되었습니다. <br>
+
+`readOnly=true` 를 주면 **트랜잭션 범위는 유지**하되, 조회 기능만 남겨두어 **조회 속도가 개선**되기 때문에 <br>
+등록, 수정, 삭제 기능이 전혀 없는 서비스 메소드에서 사용하는 것을 추천합니다.
+
+findAllDesc 메소드의 람다식을 해석하면 다음과 같습니다.
+
+> postsRepository 결과로 넘어온 Posts의 Stream을 map을 통해 <br>
+> PostsListResponseDto 변환 &rarr; List로 반환하는 메소드 입니다.
 
 
 
