@@ -37,7 +37,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // userNameAttributeName 은 OAuth2 로그인 진행 시 키가 되는 필드 값 (Primary Key 같은 의미)
         // 구글의 기본 코드는 "sub"
         // 이후 네이버 / 구글 로그인을 동시 지원할 때 사용
-        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+        String userNameAttributeName = userRequest
+                .getClientRegistration()
+                .getProviderDetails()
+                .getUserInfoEndpoint()
+                .getUserNameAttributeName();
 
         // OAuthAttributes 는 OAuth2UserService 통해 가져온 OAuth2User Attribute 담을 클래스
         // 이후 네이버 등 다른 소셜 로그인도 이 클래스 사용
