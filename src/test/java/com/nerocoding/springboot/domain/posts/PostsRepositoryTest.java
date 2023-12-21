@@ -1,6 +1,7 @@
 package com.nerocoding.springboot.domain.posts;
 
 import org.aspectj.lang.annotation.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +16,7 @@ public class PostsRepositoryTest {
     @Autowired
     PostsRepository postsRepository;
 
-    @After("")
+    @AfterEach
     public void cleanup() {
         postsRepository.deleteAll();
     }

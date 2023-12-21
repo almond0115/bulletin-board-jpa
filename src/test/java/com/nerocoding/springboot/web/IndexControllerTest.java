@@ -19,6 +19,6 @@ public class IndexControllerTest {
         String body = this.restTemplate.getForObject("/", String.class);
 
         // then
-        assertThat(body).contains("SpringBoot 웹 서비스");
+        assertThat(body).contains("SpringBoot + JPA 게시판 구현");
     }
 }
