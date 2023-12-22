@@ -2,12 +2,15 @@ package com.nerocoding.springboot.web;
 
 import com.nerocoding.springboot.domain.posts.PostsRepository;
 import com.nerocoding.springboot.service.posts.PostsService;
+import com.nerocoding.springboot.web.dto.PostsListResponseDto;
 import com.nerocoding.springboot.web.dto.PostsResponseDto;
 import com.nerocoding.springboot.web.dto.PostsSaveRequestDto;
 import com.nerocoding.springboot.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,5 +36,10 @@ public class PostsApiController {
     public Long delete(@PathVariable Long id){
         postsService.delete(id);
         return id;
+    }
+
+    @GetMapping("/api/v1/posts/list")
+    public List<PostsListResponseDto> findAll() {
+        return postsService.findAllDesc();
     }
 }
