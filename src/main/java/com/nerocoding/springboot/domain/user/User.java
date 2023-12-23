@@ -1,11 +1,11 @@
 package com.nerocoding.springboot.domain.user;
 
 import com.nerocoding.springboot.domain.BaseTimeEntity;
-import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor

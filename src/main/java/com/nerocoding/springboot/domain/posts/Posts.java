@@ -1,10 +1,11 @@
 package com.nerocoding.springboot.domain.posts;
 
 import com.nerocoding.springboot.domain.BaseTimeEntity;
-import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 /**
  * 실제 DB 클래스와 매칭될 클래스

@@ -4,12 +4,13 @@ import com.nerocoding.springboot.config.auth.LoginUser;
 import com.nerocoding.springboot.config.auth.dto.SessionUser;
 import com.nerocoding.springboot.service.posts.PostsService;
 import com.nerocoding.springboot.web.dto.PostsResponseDto;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import javax.servlet.http.HttpSession;
 
 @RequiredArgsConstructor
 @Controller
