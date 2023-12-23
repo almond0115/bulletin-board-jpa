@@ -8,15 +8,15 @@ import lombok.Getter;
 import java.util.Map;
 
 @Getter
-public class OAuthAttributes {
-    private Map<String, Object> attributes;
-    private String nameAttributeKey;
-    private String name;
-    private String email;
-    private String picture;
+public class OAuthAttributes<T> {
+    private final Map<String, T> attributes;
+    private final String nameAttributeKey;
+    private final String name;
+    private final String email;
+    private final String picture;
 
     @Builder
-    public OAuthAttributes(Map<String, Object> attributes,
+    public OAuthAttributes(Map<String, T> attributes,
                            String nameAttributeKey,
                            String name,
                            String email,
@@ -29,18 +29,18 @@ public class OAuthAttributes {
     }
 
     // OAuth2User 반환하는 사용자 정보는 Map 이므로 값 하나하나 변환해야 함
-    public static OAuthAttributes of(String registrationId,
+    public static <T> OAuthAttributes<T> of(String registrationId,
                                      String userNameAttributeName,
-                                     Map<String, Object> attributes) {
+                                     Map<String, T> attributes) {
         if("naver".equals(registrationId)) {
             return ofNaver("id", attributes);
         }
         return ofGoogle(userNameAttributeName, attributes);
     }
 
-    private static OAuthAttributes ofGoogle(String userNameAttributeName,
-                                            Map<String, Object> attributes) {
-        return OAuthAttributes.builder()
+    private static <T> OAuthAttributes<T> ofGoogle(String userNameAttributeName,
+                                            Map<String, T> attributes) {
+        return OAuthAttributes.<T>builder()
                 .name((String) attributes.get("name"))
                 .email((String) attributes.get("email"))
                 .picture((String) attributes.get("picture"))
@@ -49,12 +49,12 @@ public class OAuthAttributes {
                 .build();
     }
 
-    private static OAuthAttributes ofNaver(String userNameAttributeName,
-                                           Map<String, Object> attributes) {
+    private static <T> OAuthAttributes<T> ofNaver(String userNameAttributeName,
+                                           Map<String, T> attributes) {
         // 응답 받은 사용자의 정보를 Map 형태로 변경
-        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+        Map<String, T> response = (Map<String, T>) attributes.get("response");
 
-        return OAuthAttributes.builder()
+        return OAuthAttributes.<T>builder()
                 .name((String) response.get("name"))
                 .email((String) response.get("email"))
                 .picture((String) response.get("profile_image"))
