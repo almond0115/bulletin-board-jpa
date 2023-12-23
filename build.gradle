@@ -7,14 +7,13 @@ plugins {
 group = 'com.nerocoding.springboot'
 version = '1.0-SNAPSHOT'
 
-bootJar.archiveBaseName = 'nero'
-
 repositories {
 	mavenCentral()
 	jcenter()
 }
+
 // for Junit 5
-test { // (2)
+test {
 	useJUnitPlatform()
 }
 
@@ -28,7 +27,7 @@ jar {
 }
 
 dependencies {
-	//(3)
+	//start
 	implementation('org.springframework.boot:spring-boot-starter-web')
 	implementation('org.springframework.boot:spring-boot-starter-mustache')
 
@@ -44,7 +43,8 @@ dependencies {
 	implementation('org.mariadb.jdbc:mariadb-java-client')
 	implementation('com.h2database:h2')
 	implementation('org.mariadb.jdbc:mariadb-java-client')
-//    스프링 시큐리티 설정
+
+	//    스프링 시큐리티 설정
 	implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
 	implementation('org.springframework.session:spring-session-jdbc')
 	implementation("org.springframework.security:spring-security-test")
