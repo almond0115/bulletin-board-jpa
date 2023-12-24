@@ -4,7 +4,11 @@ jdk:
 
 branches:
   only:
-    - master
+    - main
+
+# 빌드 전 gradlew 권한 추가
+before_install:
+  - chmod +x gradlew
 
 # Travis CI 서버 Home
 cache:
